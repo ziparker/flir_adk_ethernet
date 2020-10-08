@@ -10,6 +10,7 @@
 
 using namespace cv;
 using namespace flir_adk_ethernet;
+using namespace Spinnaker;
 
 BaseCameraController::BaseCameraController() : _cvImage()
 {

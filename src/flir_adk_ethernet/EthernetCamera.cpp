@@ -255,8 +255,8 @@ bool EthernetCamera::setROI(int xOffset, int yOffset, int width, int height) {
 }
 
 void EthernetCamera::setCameraEvents() {
-    _imageHandler = std::make_shared<ImageEventHandler>(
-        ImageEventHandler(_pCam, _selectedFormat.getFormat()));
+    _imageHandler = std::make_shared<flir_adk_ethernet::ImageEventHandler>(
+        flir_adk_ethernet::ImageEventHandler(_pCam, _selectedFormat.getFormat()));
     _pCam->RegisterEvent(*_imageHandler);
 }
 

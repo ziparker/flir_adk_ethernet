@@ -43,7 +43,6 @@
 #include "flir_adk_ethernet/ImageFormat.h"
 #include "../spinnaker_wrappers/SystemWrapper.h"
 
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
@@ -156,7 +155,7 @@ class EthernetCamera
     uint8_t *_bufferStart;
     std::shared_ptr<CameraWrapper> _pCam;
     std::shared_ptr<SystemWrapper> _system;
-    std::shared_ptr<ImageEventHandler> _imageHandler;
+    std::shared_ptr<flir_adk_ethernet::ImageEventHandler> _imageHandler;
 
     cv::Mat _thermalImageMat;
 

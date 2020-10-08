@@ -23,7 +23,6 @@
 #include "../spinnaker_wrappers/CameraWrapper.h"
 
 using namespace std;
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
@@ -31,11 +30,14 @@ typedef std::chrono::high_resolution_clock Clock;
 
 namespace flir_adk_ethernet {
 
+using Spinnaker::ImagePtr;
+using Spinnaker::PixelFormatEnums;
+
 struct ImageInfo {
   int32_t width, height, size;
 };
 
-class ImageEventHandler : public ImageEvent {
+class ImageEventHandler : public Spinnaker::ImageEventHandler {
   public:
     // The constructor retrieves the serial number and initializes the image 
     // counter to 0.

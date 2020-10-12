@@ -19,7 +19,12 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+message(STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
+message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
+
 find_package(OpenCV REQUIRED)
+find_package(Spinnaker REQUIRED)
 
 add_message_files(
   FILES
@@ -50,7 +55,7 @@ include_directories(
   include
   ${OpenCV_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
-  /usr/include/spinnaker
+  ${Spinnaker_INCLUDE_DIRS}
 )
 
 add_executable(${PROJECT_NAME}_node
@@ -67,7 +72,7 @@ target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
 
-FILE(GLOB SpinLibs /usr/lib/libSpin*.so)
+FILE(GLOB SpinLibs ${Spinnaker_LIBRARIES}/libSpin*.so)
 
 add_library(BosonCameraEthernet
   src/nodelets/BaseCameraController.cpp

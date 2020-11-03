@@ -63,6 +63,11 @@ bool EthernetCamera::openCamera()
     _pCam->Init();
     initPixelFormat();
 
+    if(!setPTP()) {
+        ROS_ERROR("flir_adk_ethernet - ERROR : SET PTP. Cannot set ptp for timesync.");
+        return false;
+    }
+
     if(!setImageInfo()) {
         ROS_ERROR("flir_adk_ethernet - ERROR : GET_CONFIGURATION. Cannot get image for setting dimensions");
         return false;
@@ -121,6 +126,23 @@ bool EthernetCamera::camTypeMatches(string camType, INodeMap& nodeMapTLDevice) {
     }
     
     return false;
+}
+
+bool EthernetCamera::setPTP() {
+    try {
+        INodeMap &nodeMap = _pCam->GetNodeMap();
+        CBooleanPtr ptpEnableNode = nodeMap.GetNode("GevIEEE1588");
+        CEnumerationPtr ptpModeNode = nodeMap.GetNode("GevIEEE1588Mode");
+
+        ptpEnableNode->SetValue(true);
+        ptpModeNode->SetIntValue(Spinnaker::GevIEEE1588Mode_SlaveOnly);
+
+        return true;
+    }
+    catch(Spinnaker::Exception e) {
+        ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
+        return false;
+    }
 }
 
 bool EthernetCamera::setImageInfo() {

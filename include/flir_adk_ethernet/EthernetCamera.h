@@ -121,6 +121,7 @@ class EthernetCamera
     // open camera helpers
     bool findMatchingCamera(CameraListWrapper camList, const unsigned int numCams);
     void initPixelFormat();
+    bool setPTP();
     void setBinning();
     bool setImageInfo();
     void setCameraEvents();

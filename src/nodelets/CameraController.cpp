@@ -4,6 +4,8 @@
 /*  All rights reserved.                                                      */
 /*                                                                            */
 /******************************************************************************/
+#include <math.h>
+
 #include <pluginlib/class_list_macros.h>
 #include <fstream>
 #include "flir_adk_ethernet/CameraController.h"
@@ -31,5 +33,8 @@ void CameraController::setupFramePublish() {
 
 void CameraController::captureAndPublish(const ros::TimerEvent &evt)
 {
-    publishImage(ros::Time::now());
+    uint64_t nsecs = fmod(_camera->getActualTimestamp(), 1e9);
+    uint64_t secs = _camera->getActualTimestamp() / 1e9;
+    ros::Time stamp(secs, nsecs);
+    publishImage(stamp);
 }

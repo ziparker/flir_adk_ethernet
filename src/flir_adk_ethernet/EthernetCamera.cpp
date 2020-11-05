@@ -60,7 +60,15 @@ bool EthernetCamera::openCamera()
         ROS_ERROR("flir_adk_ethernet - ERROR : OPEN. No device matches ip_addr: %s", _ipAddr.c_str());
         return false;
     }
-    _pCam->Init();
+
+    try {
+        _pCam->Init();
+    }
+    catch(Spinnaker::Exception e) {
+        ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
+        return false;
+    }
+
     initPixelFormat();
 
     if(!setPTP()) {
@@ -84,7 +92,7 @@ bool EthernetCamera::openCamera()
 
     initOpenCVBuffers();
     setCameraInfo();
-
+    std::cout << "here" << std::endl;
     return true;
 } 
 
@@ -332,7 +340,7 @@ void EthernetCamera::setCameraInfo() {
 }
 
 bool EthernetCamera::closeCamera() {
-    if(_pCam) {
+    if(_pCam && _pCam->IsInitialized()) {
         unsetCameraEvents();
         stopCapture();
         _pCam->DeInit();

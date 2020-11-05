@@ -25,6 +25,7 @@ class CameraWrapper {
     CameraWrapper(const CameraWrapper& wrapper);
     virtual ~CameraWrapper();
     virtual void Init();
+    virtual bool IsInitialized();
     virtual bool IsValid();
     virtual INodeMap& GetNodeMap();
     virtual INodeMap& GetTLDeviceNodeMap();

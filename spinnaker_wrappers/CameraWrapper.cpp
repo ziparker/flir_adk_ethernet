@@ -22,6 +22,11 @@ void CameraWrapper::Init() {
     _cam->Init();
 }
 
+
+bool CameraWrapper::IsInitialized() {
+    _cam->IsInitialized();
+}
+
 bool CameraWrapper::IsValid() {
     return _cam->IsValid();
 }

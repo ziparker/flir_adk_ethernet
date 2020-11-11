@@ -105,6 +105,12 @@ bool EthernetCamera::findMatchingCamera(CameraListWrapper camList, const unsigne
         CameraWrapper cam = camList.GetByIndex(i);
         INodeMap &nodeMapTLDevice = cam.GetTLDeviceNodeMap();
 
+        CBooleanPtr wrongSubnet = nodeMapTLDevice.GetNode("GevDeviceIsWrongSubnet");
+        if (wrongSubnet->GetValue())
+        {
+            continue;
+        }
+
         if((!_ipAddr.empty() && ipMatches(_ipAddr, nodeMapTLDevice)) ||
            (_ipAddr.empty() && camTypeMatches(_camType, nodeMapTLDevice)))
         {

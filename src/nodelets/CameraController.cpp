@@ -33,6 +33,12 @@ void CameraController::setupFramePublish() {
 
 void CameraController::captureAndPublish(const ros::TimerEvent &evt)
 {
+    if (!_camera->isPtpEnabled())
+    {
+        publishImage(ros::Time::now());
+        return;
+    }
+
     uint64_t nsecs = fmod(_camera->getActualTimestamp(), 1e9);
     uint64_t secs = _camera->getActualTimestamp() / 1e9;
     ros::Time stamp(secs, nsecs);

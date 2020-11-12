@@ -114,7 +114,7 @@ class EthernetCamera
     // sets ROI of camera view
     bool setROI(int xOffset, int yOffset, int width, int height);
     bool setCenterROI(int width, int height);
-
+    bool isPtpEnabled();
   private:
     PixelFormatEnums getPixelFormat(string formatStr);
 
@@ -166,6 +166,7 @@ class EthernetCamera
     ImageFormat _selectedFormat;
     std::string _camType;
     bool _isStreaming = false;
+    bool _ptpEnabled = false;
 };
 
 }  // namespace flir_adk_ethernet

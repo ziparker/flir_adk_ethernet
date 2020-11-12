@@ -19,10 +19,6 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
-message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
-message(STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
-message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
-
 find_package(OpenCV REQUIRED)
 find_package(Spinnaker REQUIRED)
 
@@ -124,10 +120,10 @@ install(FILES nodelet_plugins.xml
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-  catkin_add_gtest(${PROJECT_NAME}-test 
+  catkin_add_gtest(${PROJECT_NAME}-test
     test/test_flir_adk_ethernet.cpp
   )
-  target_link_libraries(${PROJECT_NAME}-test 
+  target_link_libraries(${PROJECT_NAME}-test
     ${catkin_LIBRARIES}
     BosonCameraEthernet
   )

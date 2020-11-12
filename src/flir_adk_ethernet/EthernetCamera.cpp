@@ -64,7 +64,7 @@ bool EthernetCamera::openCamera()
     try {
         _pCam->Init();
     }
-    catch(Spinnaker::Exception e) {
+    catch(const Spinnaker::Exception e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
@@ -92,7 +92,6 @@ bool EthernetCamera::openCamera()
 
     initOpenCVBuffers();
     setCameraInfo();
-    std::cout << "here" << std::endl;
     return true;
 } 
 
@@ -106,8 +105,7 @@ bool EthernetCamera::findMatchingCamera(CameraListWrapper camList, const unsigne
         INodeMap &nodeMapTLDevice = cam.GetTLDeviceNodeMap();
 
         CBooleanPtr wrongSubnet = nodeMapTLDevice.GetNode("GevDeviceIsWrongSubnet");
-        if (wrongSubnet->GetValue())
-        {
+        if (wrongSubnet->GetValue()) {
             continue;
         }
 
@@ -150,10 +148,10 @@ bool EthernetCamera::setPTP() {
 
         ptpEnableNode->SetValue(true);
         ptpModeNode->SetIntValue(Spinnaker::GevIEEE1588Mode_SlaveOnly);
-
+        _ptpEnabled = true;
         return true;
     }
-    catch(Spinnaker::Exception e) {
+    catch(const Spinnaker::Exception e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
@@ -165,7 +163,7 @@ bool EthernetCamera::setImageInfo() {
         setROI(_xOffset, _yOffset, _width, _height);
 
         return true;
-    } catch(Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
@@ -200,7 +198,7 @@ void EthernetCamera::initPixelFormat() {
         CEnumerationPtr pixelFormatNode = nodeMap.GetNode("PixelFormat");
 
         pixelFormatNode->SetIntValue(_selectedFormat.getValue(pixelFormatNode));
-    } catch(Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception e) {
         ROS_INFO("Unable to set pixel format to: %s", _selectedFormat.toString().c_str());
     }
 }
@@ -222,6 +220,10 @@ bool EthernetCamera::setCenterROI(int width, int height) {
     int xOffset = max(0, (maxWidth - width) / 2);
     int yOffset = max(0, (maxHeight - height) / 2);
     return setROI(xOffset, yOffset, width, height);
+}
+
+bool EthernetCamera::isPtpEnabled() {
+    return _ptpEnabled;
 }
 
 bool EthernetCamera::setROI(int xOffset, int yOffset, int width, int height) {
@@ -275,7 +277,7 @@ bool EthernetCamera::setROI(int xOffset, int yOffset, int width, int height) {
         ROS_INFO("Camera info - Width: %d, Height: %d, X Offset: %d, Y Offset: %d",
             _width, _height, _xOffset, _yOffset);
         return true;
-    } catch (Spinnaker::Exception e) {
+    } catch (const Spinnaker::Exception e) {
         ROS_ERROR(e.what());
 
         widthNode->SetValue(8);
@@ -358,7 +360,7 @@ bool EthernetCamera::closeCamera() {
 void EthernetCamera::unsetCameraEvents() {
     try {
         _pCam->UnregisterEvent(*_imageHandler);
-    } catch(Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception e) {
         // if there's an error - the event is already unregistered, 
         // or the camera is invalid (no need to unset)
     }
@@ -486,7 +488,7 @@ bool EthernetCamera::setNodeValue(std::string nodeName, std::string value) {
                 break;
             }
         }
-    } catch(Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception e) {
         ROS_ERROR(e.what());
     }
     
@@ -544,7 +546,7 @@ void EthernetCamera::stopCapture() {
     try {
         _isStreaming = false;
         _pCam->EndAcquisition();
-    } catch(Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception e) {
         ROS_ERROR(e.what());
     }
 }

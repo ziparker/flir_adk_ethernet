@@ -33,7 +33,7 @@ void CameraController::setupFramePublish() {
 
 void CameraController::captureAndPublish(const ros::TimerEvent &evt)
 {
-    if (!_camera->isPtpEnabled())
+    if (!_camera->isPTPEnabled())
     {
         publishImage(ros::Time::now());
         return;

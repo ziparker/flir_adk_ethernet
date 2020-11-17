@@ -114,7 +114,8 @@ class EthernetCamera
     // sets ROI of camera view
     bool setROI(int xOffset, int yOffset, int width, int height);
     bool setCenterROI(int width, int height);
-    bool isPtpEnabled();
+    bool isPTPEnabled();
+    bool printPTPStatus();
   private:
     PixelFormatEnums getPixelFormat(string formatStr);
 

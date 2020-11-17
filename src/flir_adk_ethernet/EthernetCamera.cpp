@@ -92,6 +92,7 @@ bool EthernetCamera::openCamera()
 
     initOpenCVBuffers();
     setCameraInfo();
+    
     return true;
 } 
 
@@ -143,18 +144,41 @@ bool EthernetCamera::camTypeMatches(string camType, INodeMap& nodeMapTLDevice) {
 bool EthernetCamera::setPTP() {
     try {
         INodeMap &nodeMap = _pCam->GetNodeMap();
-        CBooleanPtr ptpEnableNode = nodeMap.GetNode("GevIEEE1588");
-        CEnumerationPtr ptpModeNode = nodeMap.GetNode("GevIEEE1588Mode");
+        CBooleanPtr ptpEnable = nodeMap.GetNode("GevIEEE1588");
+        CEnumerationPtr ptpMode = nodeMap.GetNode("GevIEEE1588Mode");
+        CEnumerationPtr ptpStatus = nodeMap.GetNode("GevIEEE1588Status");
 
-        ptpEnableNode->SetValue(true);
-        ptpModeNode->SetIntValue(Spinnaker::GevIEEE1588Mode_SlaveOnly);
+        ptpEnable->SetValue(true);
+        ptpMode->SetIntValue(Spinnaker::GevIEEE1588Mode_SlaveOnly);
         _ptpEnabled = true;
+        
+        ROS_INFO("flir_adk_ethernet - PTP enabled flag: %d", ptpEnable->GetValue());
+        ROS_INFO("flir_adk_ethernet - Set PTP to mode %d", ptpMode->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - PTP status flag: %d", ptpStatus->GetIntValue());
         return true;
     }
     catch(const Spinnaker::Exception e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
+}
+
+bool EthernetCamera::printPTPStatus() {
+    try {
+        INodeMap &nodeMap = _pCam->GetNodeMap();
+        CBooleanPtr ptpEnable = nodeMap.GetNode("GevIEEE1588");
+        CEnumerationPtr ptpMode = nodeMap.GetNode("GevIEEE1588Mode");
+        CEnumerationPtr ptpStatus = nodeMap.GetNode("GevIEEE1588Status");
+
+        ROS_INFO("flir_adk_ethernet - PTP enabled flag: %d", ptpEnable->GetValue());
+        ROS_INFO("flir_adk_ethernet - Set PTP to mode %d", ptpMode->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - PTP status flag: %d", ptpStatus->GetIntValue());
+        return true;
+    }   
+    catch(const Spinnaker::Exception e) {
+        ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
+        return false;
+    }  
 }
 
 bool EthernetCamera::setImageInfo() {
@@ -222,7 +246,7 @@ bool EthernetCamera::setCenterROI(int width, int height) {
     return setROI(xOffset, yOffset, width, height);
 }
 
-bool EthernetCamera::isPtpEnabled() {
+bool EthernetCamera::isPTPEnabled() {
     return _ptpEnabled;
 }
 

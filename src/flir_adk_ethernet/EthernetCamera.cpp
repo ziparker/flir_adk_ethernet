@@ -107,7 +107,7 @@ bool EthernetCamera::findMatchingCamera(CameraListWrapper camList, const unsigne
 
         CBooleanPtr wrongSubnet = nodeMapTLDevice.GetNode("GevDeviceIsWrongSubnet");
         if (wrongSubnet->GetValue()) {
-            ROS_INFO("Skipping wrong subnet.");
+            ROS_INFO("flir_adk_ethernet - INFO : Skipping wrong subnet.");
             continue;
         }
 
@@ -115,7 +115,7 @@ bool EthernetCamera::findMatchingCamera(CameraListWrapper camList, const unsigne
            (_ipAddr.empty() && camTypeMatches(_camType, nodeMapTLDevice)))
         {
             CStringPtr modelName = nodeMapTLDevice.GetNode("DeviceModelName");
-            ROS_INFO("Found matching camera %s", modelName->ToString().c_str());
+            ROS_INFO("flir_adk_ethernet - INFO : Found matching camera %s", modelName->ToString().c_str());
             _pCam = std::make_shared<CameraWrapper>(cam);
             return true;
         }
@@ -153,9 +153,9 @@ bool EthernetCamera::setPTP() {
         ptpMode->SetIntValue(Spinnaker::GevIEEE1588Mode_SlaveOnly);
         _ptpEnabled = true;
         
-        ROS_INFO("flir_adk_ethernet - PTP enabled flag: %d", ptpEnable->GetValue());
-        ROS_INFO("flir_adk_ethernet - Set PTP to mode %d", ptpMode->GetIntValue());
-        ROS_INFO("flir_adk_ethernet - PTP status flag: %d", ptpStatus->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : PTP enabled flag: %d", ptpEnable->GetValue());
+        ROS_INFO("flir_adk_ethernet - INFO : Set PTP to mode %d", ptpMode->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %d", ptpStatus->GetIntValue());
         return true;
     }
     catch(const Spinnaker::Exception e) {
@@ -171,9 +171,9 @@ bool EthernetCamera::printPTPStatus() {
         CEnumerationPtr ptpMode = nodeMap.GetNode("GevIEEE1588Mode");
         CEnumerationPtr ptpStatus = nodeMap.GetNode("GevIEEE1588Status");
 
-        ROS_INFO("flir_adk_ethernet - PTP enabled flag: %d", ptpEnable->GetValue());
-        ROS_INFO("flir_adk_ethernet - Set PTP to mode %d", ptpMode->GetIntValue());
-        ROS_INFO("flir_adk_ethernet - PTP status flag: %d", ptpStatus->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : PTP enabled flag: %d", ptpEnable->GetValue());
+        ROS_INFO("flir_adk_ethernet - INFO : Set PTP to mode %d", ptpMode->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %d", ptpStatus->GetIntValue());
         return true;
     }   
     catch(const Spinnaker::Exception e) {
@@ -224,7 +224,7 @@ void EthernetCamera::initPixelFormat() {
 
         pixelFormatNode->SetIntValue(_selectedFormat.getValue(pixelFormatNode));
     } catch(const Spinnaker::Exception e) {
-        ROS_INFO("Unable to set pixel format to: %s", _selectedFormat.toString().c_str());
+        ROS_INFO("flir_adk_ethernet - ERROR : Unable to set pixel format to: %s", _selectedFormat.toString().c_str());
     }
 }
 
@@ -299,7 +299,7 @@ bool EthernetCamera::setROI(int xOffset, int yOffset, int width, int height) {
             resetBuffer();
         }
 
-        ROS_INFO("Camera info - Width: %d, Height: %d, X Offset: %d, Y Offset: %d",
+        ROS_INFO("flir_adk_ethernet - INFO : Camera info - Width: %d, Height: %d, X Offset: %d, Y Offset: %d",
             _width, _height, _xOffset, _yOffset);
         return true;
     } catch (const Spinnaker::Exception e) {
@@ -330,7 +330,7 @@ bool EthernetCamera::setImageAcquisition() {
     CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
     if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode)) 
     {
-        ROS_ERROR("Unable to set acquisition mode. Aborting...");
+        ROS_ERROR("flir_adk_ethernet - INFO : Unable to set acquisition mode. Aborting...");
         return false;
     }
 
@@ -338,7 +338,7 @@ bool EthernetCamera::setImageAcquisition() {
     CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
     if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
     {
-        ROS_ERROR("Unable to set acquisition mode to continuous (entry retrieval). Aborting...");
+        ROS_ERROR("flir_adk_ethernet - INFO : Unable to set acquisition mode to continuous (entry retrieval). Aborting...");
         return false;
     }
 
@@ -348,7 +348,7 @@ bool EthernetCamera::setImageAcquisition() {
     // Set integer value from entry node as new value of enumeration node
     ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
 
-    ROS_INFO("Acquisition mode set to continuous...");
+    ROS_INFO("flir_adk_ethernet - INFO : Acquisition mode set to continuous...");
     
     startCapture();
 
@@ -368,7 +368,7 @@ void EthernetCamera::setCameraInfo() {
     if (_cameraInfo->validateURL(_cameraInfoPath)) {
         _cameraInfo->loadCameraInfo(_cameraInfoPath);
     } else {
-        ROS_INFO("flir_adk_ethernet - camera_info_url could not be validated. Publishing with unconfigured camera.");
+        ROS_INFO("flir_adk_ethernet - INFO : camera_info_url could not be validated. Publishing with unconfigured camera.");
     }
 }
 

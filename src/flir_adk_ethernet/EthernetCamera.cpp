@@ -107,6 +107,7 @@ bool EthernetCamera::findMatchingCamera(CameraListWrapper camList, const unsigne
 
         CBooleanPtr wrongSubnet = nodeMapTLDevice.GetNode("GevDeviceIsWrongSubnet");
         if (wrongSubnet->GetValue()) {
+            ROS_INFO("Skipping wrong subnet.");
             continue;
         }
 

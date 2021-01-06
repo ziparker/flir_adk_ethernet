@@ -1,13 +1,3 @@
-# @file FindSpinnaker.cmake
-#
-# Copyright 2020
-# Carnegie Robotics, LLC
-# 4501 Hatfield Street, Pittsburgh, PA 15201
-# http://www.carnegierobotics.com
-#
-# Significant history (date, user, job code, action):
-#   2020-10-08, jgeissinger@carnegierobotics.com, 2040, Created file.
-
 unset(SPINNAKER_FOUND)
 unset(SPINNAKER_INCLUDE_DIRS)
 unset(SPINNAKER_LIB)

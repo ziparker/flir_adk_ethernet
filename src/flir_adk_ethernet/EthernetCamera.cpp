@@ -154,8 +154,8 @@ bool EthernetCamera::setPTP() {
         _ptpEnabled = true;
         
         ROS_INFO("flir_adk_ethernet - INFO : PTP enabled flag: %d", ptpEnable->GetValue());
-        ROS_INFO("flir_adk_ethernet - INFO : Set PTP to mode %d", ptpMode->GetIntValue());
-        ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %d", ptpStatus->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : Set PTP to mode %ld", ptpMode->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %ld", ptpStatus->GetIntValue());
         return true;
     }
     catch(const Spinnaker::Exception e) {
@@ -172,8 +172,8 @@ bool EthernetCamera::printPTPStatus() {
         CEnumerationPtr ptpStatus = nodeMap.GetNode("GevIEEE1588Status");
 
         ROS_INFO("flir_adk_ethernet - INFO : PTP enabled flag: %d", ptpEnable->GetValue());
-        ROS_INFO("flir_adk_ethernet - INFO : Set PTP to mode %d", ptpMode->GetIntValue());
-        ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %d", ptpStatus->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : Set PTP to mode %ld", ptpMode->GetIntValue());
+        ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %ld", ptpStatus->GetIntValue());
         return true;
     }   
     catch(const Spinnaker::Exception e) {
@@ -303,7 +303,7 @@ bool EthernetCamera::setROI(int xOffset, int yOffset, int width, int height) {
             _width, _height, _xOffset, _yOffset);
         return true;
     } catch (const Spinnaker::Exception e) {
-        ROS_ERROR(e.what());
+        ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
 
         widthNode->SetValue(8);
         heightNode->SetValue(8);
@@ -514,7 +514,7 @@ bool EthernetCamera::setNodeValue(std::string nodeName, std::string value) {
             }
         }
     } catch(const Spinnaker::Exception e) {
-        ROS_ERROR(e.what());
+        ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
     }
     
     startCapture();
@@ -572,7 +572,7 @@ void EthernetCamera::stopCapture() {
         _isStreaming = false;
         _pCam->EndAcquisition();
     } catch(const Spinnaker::Exception e) {
-        ROS_ERROR(e.what());
+        ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
     }
 }
 

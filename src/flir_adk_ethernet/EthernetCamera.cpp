@@ -64,7 +64,7 @@ bool EthernetCamera::openCamera()
     try {
         _pCam->Init();
     }
-    catch(const Spinnaker::Exception e) {
+    catch(const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
@@ -92,7 +92,7 @@ bool EthernetCamera::openCamera()
 
     initOpenCVBuffers();
     setCameraInfo();
-    
+
     return true;
 } 
 
@@ -158,7 +158,7 @@ bool EthernetCamera::setPTP() {
         ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %ld", ptpStatus->GetIntValue());
         return true;
     }
-    catch(const Spinnaker::Exception e) {
+    catch(const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
@@ -176,7 +176,7 @@ bool EthernetCamera::printPTPStatus() {
         ROS_INFO("flir_adk_ethernet - INFO : PTP status flag: %ld", ptpStatus->GetIntValue());
         return true;
     }   
-    catch(const Spinnaker::Exception e) {
+    catch(const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }  
@@ -188,7 +188,7 @@ bool EthernetCamera::setImageInfo() {
         setROI(_xOffset, _yOffset, _width, _height);
 
         return true;
-    } catch(const Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
         return false;
     }
@@ -223,7 +223,7 @@ void EthernetCamera::initPixelFormat() {
         CEnumerationPtr pixelFormatNode = nodeMap.GetNode("PixelFormat");
 
         pixelFormatNode->SetIntValue(_selectedFormat.getValue(pixelFormatNode));
-    } catch(const Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception & e) {
         ROS_INFO("flir_adk_ethernet - ERROR : Unable to set pixel format to: %s", _selectedFormat.toString().c_str());
     }
 }
@@ -302,7 +302,7 @@ bool EthernetCamera::setROI(int xOffset, int yOffset, int width, int height) {
         ROS_INFO("flir_adk_ethernet - INFO : Camera info - Width: %d, Height: %d, X Offset: %d, Y Offset: %d",
             _width, _height, _xOffset, _yOffset);
         return true;
-    } catch (const Spinnaker::Exception e) {
+    } catch (const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
 
         widthNode->SetValue(8);
@@ -385,7 +385,7 @@ bool EthernetCamera::closeCamera() {
 void EthernetCamera::unsetCameraEvents() {
     try {
         _pCam->UnregisterEvent(*_imageHandler);
-    } catch(const Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception &) {
         // if there's an error - the event is already unregistered, 
         // or the camera is invalid (no need to unset)
     }
@@ -513,7 +513,7 @@ bool EthernetCamera::setNodeValue(std::string nodeName, std::string value) {
                 break;
             }
         }
-    } catch(const Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
     }
     
@@ -571,7 +571,7 @@ void EthernetCamera::stopCapture() {
     try {
         _isStreaming = false;
         _pCam->EndAcquisition();
-    } catch(const Spinnaker::Exception e) {
+    } catch(const Spinnaker::Exception & e) {
         ROS_ERROR("flir_adk_ethernet - ERROR : %s", e.what());
     }
 }

@@ -68,7 +68,7 @@ target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
 
-FILE(GLOB SpinLibs ${Spinnaker_LIBRARIES}/libSpin*.so)
+FILE(GLOB SpinLibs ${Spinnaker_LIBRARY_DIRS}/libSpin*.so)
 
 add_library(BosonCameraEthernet
   src/nodelets/BaseCameraController.cpp

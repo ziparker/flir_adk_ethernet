@@ -8,7 +8,7 @@
 
 using namespace flir_adk_ethernet;
 
-CameraListWrapper::CameraListWrapper(CameraList camList) : _camList(camList) {}
+CameraListWrapper::CameraListWrapper(Spinnaker::CameraList camList) : _camList(camList) {}
 
 CameraListWrapper::CameraListWrapper(const CameraListWrapper& wrapper) {
     _camList = wrapper._camList;
@@ -27,7 +27,7 @@ void CameraListWrapper::Clear() {
 }
 
 CameraWrapper CameraListWrapper::GetByIndex(unsigned int i) {
-    CameraPtr ptr = _camList.GetByIndex(i);
+    Spinnaker::CameraPtr ptr = _camList.GetByIndex(i);
     CameraWrapper wrapper(ptr);
     return wrapper;
 }

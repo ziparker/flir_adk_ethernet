@@ -53,7 +53,7 @@ void ImageEventHandler::OnImageEvent(ImagePtr image) {
         return;
     }
     m_mutex.lock();
-    m_resultImage = image->Convert(_format, HQ_LINEAR);
+    m_resultImage = image->Convert(_format, Spinnaker::HQ_LINEAR);
     m_lastTimeStamp = image->GetTimeStamp();
     m_mutex.unlock();
 

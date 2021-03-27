@@ -31,13 +31,15 @@
 #include <spinnaker/Spinnaker.h>
 #include <spinnaker/SpinGenApi/SpinnakerGenApi.h>
 
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
 namespace flir_adk_ethernet
 {
+
+using Spinnaker::PixelFormatEnums;
+
 // class for managing properties assosicated with pixel formats 
 // (color, mono, 8 and 16 bit)
 class ImageFormat {

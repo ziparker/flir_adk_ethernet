@@ -9,7 +9,7 @@
 
 using namespace cv;
 using namespace flir_adk_ethernet;
-
+using namespace Spinnaker;
 
 ImageFormat::ImageFormat(std::string format) {
     _format = PixelFormat_RGB8;

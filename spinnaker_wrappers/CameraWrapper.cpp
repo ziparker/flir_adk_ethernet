@@ -9,7 +9,7 @@
 using namespace flir_adk_ethernet;
 
 CameraWrapper::CameraWrapper() {}
-CameraWrapper::CameraWrapper(CameraPtr cam) : _cam(cam) {}
+CameraWrapper::CameraWrapper(Spinnaker::CameraPtr cam) : _cam(cam) {}
 
 CameraWrapper::CameraWrapper(const CameraWrapper& wrapper) {
     _cam = wrapper._cam;
@@ -20,6 +20,11 @@ CameraWrapper::~CameraWrapper() {
 
 void CameraWrapper::Init() {
     _cam->Init();
+}
+
+
+bool CameraWrapper::IsInitialized() {
+    _cam->IsInitialized();
 }
 
 bool CameraWrapper::IsValid() {
@@ -34,12 +39,12 @@ INodeMap& CameraWrapper::GetTLDeviceNodeMap() {
     return _cam->GetTLDeviceNodeMap();
 }
 
-void CameraWrapper::RegisterEvent(Spinnaker::Event &e) {
-    _cam->RegisterEvent(e);
+void CameraWrapper::RegisterEvent(Spinnaker::EventHandler &e) {
+    _cam->RegisterEventHandler(e);
 }
 
-void CameraWrapper::UnregisterEvent(Spinnaker::Event &e) {
-    _cam->UnregisterEvent(e);
+void CameraWrapper::UnregisterEvent(Spinnaker::EventHandler &e) {
+    _cam->UnregisterEventHandler(e);
 }
 
 void CameraWrapper::BeginAcquisition() {

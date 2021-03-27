@@ -43,7 +43,6 @@
 #include "flir_adk_ethernet/ImageFormat.h"
 #include "../spinnaker_wrappers/SystemWrapper.h"
 
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
@@ -115,13 +114,17 @@ class EthernetCamera
     // sets ROI of camera view
     bool setROI(int xOffset, int yOffset, int width, int height);
     bool setCenterROI(int width, int height);
-
+ 
+    bool isPTPEnabled();
+    bool printPTPStatus();
+  
   private:
     PixelFormatEnums getPixelFormat(string formatStr);
 
     // open camera helpers
     bool findMatchingCamera(CameraListWrapper camList, const unsigned int numCams);
     void initPixelFormat();
+    bool setPTP();
     void setBinning();
     bool setImageInfo();
     void setCameraEvents();
@@ -156,7 +159,7 @@ class EthernetCamera
     uint8_t *_bufferStart;
     std::shared_ptr<CameraWrapper> _pCam;
     std::shared_ptr<SystemWrapper> _system;
-    std::shared_ptr<ImageEventHandler> _imageHandler;
+    std::shared_ptr<flir_adk_ethernet::ImageEventHandler> _imageHandler;
 
     cv::Mat _thermalImageMat;
 
@@ -166,6 +169,7 @@ class EthernetCamera
     ImageFormat _selectedFormat;
     std::string _camType;
     bool _isStreaming = false;
+    bool _ptpEnabled = false;
 };
 
 }  // namespace flir_adk_ethernet

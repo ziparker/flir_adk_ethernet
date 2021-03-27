@@ -28,7 +28,6 @@
 
 #include "flir_adk_ethernet/BaseCameraController.h"
 
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;

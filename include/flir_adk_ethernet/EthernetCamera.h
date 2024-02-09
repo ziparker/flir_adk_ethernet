@@ -31,6 +31,9 @@
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
 
+#include <diagnostic_updater/diagnostic_updater.h>
+#include <diagnostic_updater/publisher.h>
+
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 
@@ -43,7 +46,6 @@
 #include "flir_adk_ethernet/ImageFormat.h"
 #include "../spinnaker_wrappers/SystemWrapper.h"
 
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
@@ -69,7 +71,7 @@ enum Polarity {
 class EthernetCamera
 {
   public:
-    EthernetCamera(EthernetCameraInfo info, 
+    EthernetCamera(EthernetCameraInfo info,
       std::shared_ptr<SystemWrapper> sys, ros::NodeHandle);
     ~EthernetCamera();
 
@@ -82,6 +84,7 @@ class EthernetCamera
                     const int& height,
                     const int& width);
     bool openCamera();
+    bool initCamera();
     bool closeCamera();
 
     void stopCapture();
@@ -89,7 +92,7 @@ class EthernetCamera
 
     // gets the openCV image matrix
     cv::Mat getImageMatrix();
-    
+
     // gets the camera info formatted as a ROS sensor message
     sensor_msgs::CameraInfo getCameraInfo();
 
@@ -111,10 +114,13 @@ class EthernetCamera
 
     // gets encoding for image conversion
     std::string getEncoding();
-    
+
     // sets ROI of camera view
     bool setROI(int xOffset, int yOffset, int width, int height);
     bool setCenterROI(int width, int height);
+
+    bool isPTPEnabled();
+    bool getPTPSlaveStatus();
 
   private:
     PixelFormatEnums getPixelFormat(string formatStr);
@@ -122,6 +128,7 @@ class EthernetCamera
     // open camera helpers
     bool findMatchingCamera(CameraListWrapper camList, const unsigned int numCams);
     void initPixelFormat();
+    bool setPTP();
     void setBinning();
     bool setImageInfo();
     void setCameraEvents();
@@ -150,13 +157,17 @@ class EthernetCamera
     bool setEnumNode(CNodePtr node, std::string value);
     bool setCommandNode(CNodePtr node);
 
+    void setupDiagnostics(ros::NodeHandle nh);
+    void createPtpStatusDiagnostics(diagnostic_updater::DiagnosticStatusWrapper& stat);
+    void diagnosticsTimerCallback(const ros::TimerEvent&);
+
     std::shared_ptr<camera_info_manager::CameraInfoManager> _cameraInfo;
     int32_t _width, _height, _xOffset, _yOffset, _imageSize;
     int32_t _frame = 0;                // First frame number enumeration
     uint8_t *_bufferStart;
     std::shared_ptr<CameraWrapper> _pCam;
     std::shared_ptr<SystemWrapper> _system;
-    std::shared_ptr<ImageEventHandler> _imageHandler;
+    std::shared_ptr<flir_adk_ethernet::ImageEventHandler> _imageHandler;
 
     cv::Mat _thermalImageMat;
 
@@ -166,8 +177,14 @@ class EthernetCamera
     ImageFormat _selectedFormat;
     std::string _camType;
     bool _isStreaming = false;
+    bool _ptpEnabled = false;
+    bool _ptpSlaveMode = false;
+    CEnumerationPtr _ptpStatus;
+    diagnostic_updater::Updater _diagnosticsUpdater;
+    ros::Timer _diagnosticsTrigger;
+
 };
 
-}  // namespace flir_adk_ethernet
+}// namespace flir_adk_ethernet
 
 #endif

@@ -10,6 +10,7 @@
 
 using namespace cv;
 using namespace flir_adk_ethernet;
+using namespace Spinnaker;
 
 BaseCameraController::BaseCameraController() : _cvImage()
 {
@@ -26,14 +27,12 @@ void BaseCameraController::onInit()
 {
     nh = getNodeHandle();
     pnh = getPrivateNodeHandle();
-    
+
     it = std::shared_ptr<image_transport::ImageTransport>(new image_transport::ImageTransport(nh));
     _imagePublisher = it->advertiseCamera("image_raw", 1);
     setupExtraPubSub();
 
     setupCommandListeners();
-
-    bool exit = false;
 
     std::string ip, cameraInfoStr, formatStr, camType;
     int width, height, xOffset, yOffset;
@@ -50,7 +49,7 @@ void BaseCameraController::onInit()
 
     ROS_INFO("flir_adk_ethernet - Got frame_id: %s.", frame_id.c_str());
     ROS_INFO("flir_adk_ethernet - Got IP: %s.", ip.c_str());
-    ROS_INFO("flir_adk_ethernet - Got camera_info_url: %s.", 
+    ROS_INFO("flir_adk_ethernet - Got camera_info_url: %s.",
         cameraInfoStr.c_str());
     ROS_INFO("flir_adk_ethernet - Got video_format: %s.", formatStr.c_str());
     ROS_INFO("flir_adk_ethernet - Got camera_type: %s.", camType.c_str());
@@ -74,16 +73,14 @@ void BaseCameraController::onInit()
 
     _camera = new EthernetCamera(info, sys, nh);
 
-    if (!exit) {
-        exit = !_camera->openCamera() || exit;
+    bool exit = false;
+
+    ros::Rate r(2);
+    while (!exit || !_camera->openCamera()) {
+        exit = ros::ok();
+        r.sleep();
     }
 
-    if (exit)
-    {
-        ros::shutdown();
-        return;
-    }
-    
     setupFramePublish();
 }
 
@@ -98,7 +95,7 @@ void BaseCameraController::setupCommandListeners() {
     _autoFFCListener = nh.subscribe<std_msgs::Bool>("auto_ffc", 10,
         boost::bind(&BaseCameraController::setAutoFFC, this, _1));
 
-    _ffcListener = nh.subscribe<std_msgs::Empty>("ffc", 10, 
+    _ffcListener = nh.subscribe<std_msgs::Empty>("ffc", 10,
         boost::bind(&BaseCameraController::executeFFC, this));
 
     _setNodeListener = nh.subscribe<diagnostic_msgs::KeyValue>("set_node", 10,
@@ -178,8 +175,6 @@ void BaseCameraController::setCenterROI(const sensor_msgs::RegionOfInterestConst
     _camera->startCapture();
 }
 
-
-
 void BaseCameraController::publishImage(ros::Time timestamp) {
     sensor_msgs::CameraInfoPtr
         ci(new sensor_msgs::CameraInfo(_camera->getCameraInfo()));
@@ -198,8 +193,8 @@ void BaseCameraController::publishImage(ros::Time timestamp) {
         _imagePublisher.publish(publishedImage, ci);
 
         _seq++;
-    } catch(exception e) {
+    } catch(const exception& e) {
         // just don't publish this frame
-        std::cout << "Publish exception" << std::endl;
+        ROS_ERROR_STREAM("Publish exception: " << e.what());
     }
 }

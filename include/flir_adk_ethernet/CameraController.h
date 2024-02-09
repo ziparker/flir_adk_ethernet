@@ -28,7 +28,6 @@
 
 #include "flir_adk_ethernet/BaseCameraController.h"
 
-using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
@@ -49,7 +48,8 @@ class CameraController : public BaseCameraController
 
     ros::Timer capture_timer;
 
-    float _frameRate;
+    float _frame_rate;
+    int _ptp_time_offset_secs;
     bool zoom_enable;
     SensorTypes sensor_type;
     Encoding _videoMode;
@@ -57,4 +57,4 @@ class CameraController : public BaseCameraController
 
 }  // namespace flir_adk_ethernet
 
-#endif  
+#endif

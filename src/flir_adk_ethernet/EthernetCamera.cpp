@@ -47,17 +47,19 @@ void EthernetCamera::agcBasicLinear(const Mat &input_16,
 }
 
 bool EthernetCamera::openCamera() {
-    CameraListWrapper camList = _system->GetCameras();
-    const unsigned int numCameras = camList.GetSize();
+    if (_ipAddr.empty()) {
+        CameraListWrapper camList = _system->GetCameras();
+        const unsigned int numCameras = camList.GetSize();
 
-    if(numCameras == 0) {
-        ROS_WARN("flir_adk_ethernet - WARN : NO_CAMERAS. No cameras found. Retrying...");
-        return false;
-    }
+        if(numCameras == 0) {
+            ROS_WARN("flir_adk_ethernet - WARN : NO_CAMERAS. No cameras found. Retrying...");
+            return false;
+        }
 
-    if(!findMatchingCamera(camList, numCameras) || !_pCam->IsValid()) {
-        ROS_WARN("flir_adk_ethernet - WARN : OPEN. No device matches ip_addr: %s", _ipAddr.c_str());
-        return false;
+        if(!findMatchingCamera(camList, numCameras) || !_pCam->IsValid()) {
+            ROS_WARN("flir_adk_ethernet - WARN : OPEN. No device matches ip_addr: %s", _ipAddr.c_str());
+            return false;
+        }
     }
 
     bool cameraStatus = initCamera();
